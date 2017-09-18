@@ -3,6 +3,7 @@
 //
 
 #import "TSDatabaseView.h"
+#import "NSNotificationCenter+OWS.h"
 #import "OWSDevice.h"
 #import "OWSReadTracking.h"
 #import "TSIncomingMessage.h"
@@ -426,9 +427,9 @@ NSString *const TSSecondaryDevicesDatabaseViewExtensionName = @"TSSecondaryDevic
             dispatch_async(dispatch_get_main_queue(), ^{
                 TSDatabaseView.sharedInstance.areAllAsyncRegistrationsComplete = YES;
                 [[NSNotificationCenter defaultCenter]
-                    postNotificationName:kNSNotificationName_DatabaseViewRegistrationComplete
-                                  object:nil
-                                userInfo:nil];
+                    postNotificationNameAsync:kNSNotificationName_DatabaseViewRegistrationComplete
+                                       object:nil
+                                     userInfo:nil];
             });
         }];
 }

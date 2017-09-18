@@ -1212,6 +1212,9 @@ typedef NS_ENUM(NSInteger, MessagesRangeSizeMode) {
 
 - (void)startExpirationTimerAnimations
 {
+    OWSAssert([NSThread isMainThread]);
+
+    // This notification should be posted synchronously.
     [[NSNotificationCenter defaultCenter] postNotificationName:ConversationViewControllerDidAppearNotification
                                                         object:nil];
 }
