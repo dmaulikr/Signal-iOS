@@ -3478,6 +3478,8 @@ typedef NS_ENUM(NSInteger, MessagesRangeSizeMode) {
                                     id<DataSource> _Nullable dataSource =
                                         [DataSourcePath dataSourceWithURL:compressedVideoUrl];
                                     [dataSource setSourceFilename:filename];
+                                    // Remove temporary file when complete.
+                                    [dataSource setShouldDeleteOnDeallocation];
                                     SignalAttachment *attachment =
                                         [SignalAttachment attachmentWithDataSource:dataSource
                                                                            dataUTI:(NSString *)kUTTypeMPEG4];
@@ -3521,6 +3523,8 @@ typedef NS_ENUM(NSInteger, MessagesRangeSizeMode) {
 
 - (void)yapDatabaseModified:(NSNotification *)notification
 {
+    OWSAssert([NSThread isMainThread]);
+
     // Currently, we update thread and message state every time
     // the database is modified.  That doesn't seem optimal, but
     // in practice it's efficient enough.
@@ -3637,6 +3641,8 @@ typedef NS_ENUM(NSInteger, MessagesRangeSizeMode) {
         }
     }
         completion:^(BOOL success) {
+            OWSAssert([NSThread isMainThread]);
+
             if (!success) {
                 [self resetContentAndLayout];
             }
@@ -3866,6 +3872,8 @@ typedef NS_ENUM(NSInteger, MessagesRangeSizeMode) {
     NSString *filename = [NSLocalizedString(@"VOICE_MESSAGE_FILE_NAME", @"Filename for voice messages.")
         stringByAppendingPathExtension:@"m4a"];
     [dataSource setSourceFilename:filename];
+    // Remove temporary file when complete.
+    [dataSource setShouldDeleteOnDeallocation];
     SignalAttachment *attachment =
         [SignalAttachment voiceMessageAttachmentWithDataSource:dataSource dataUTI:(NSString *)kUTTypeMPEG4Audio];
     if (!attachment || [attachment hasError]) {
